@@ -1,0 +1,12 @@
+TODO:
+	- Change meta data inside root page
+	- Change font
+
+
+SETUP FONT: 
+	- https://nextjs.org/docs/pages/building-your-application/optimizing/font
+	- https://tailwindcss.com/docs/font-family
+
+
+DESIGN INSPIRATION: 
+	- https://dribbble.com/shots/20860486-Minimal-blog-post-Untitled-UI?utm_source=Clipboard_Shot&utm_campaign=jordanhughes&utm_content=Minimal%20blog%20post%20%E2%80%94%20Untitled%20UI&utm_medium=Social_Share&utm_source=Clipboard_Shot&utm_campaign=jordanhughes&utm_content=Minimal%20blog%20post%20%E2%80%94%20Untitled%20UI&utm_medium=Social_Share 
