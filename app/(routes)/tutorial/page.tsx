@@ -9,8 +9,6 @@ export const metadata = {
 function page() {
   let allBlogs = getTutorialPosts();
 
-  console.log("all blogs:", allBlogs);
-
   return (
     <div>
       <ul className="space-y-10">
@@ -27,19 +25,17 @@ function page() {
           .map((post) => (
             <li key={post.slug}>
               <article className="flex flex-col space-y-1 mb-4">
-                <p className="mb-2 text-sm text-gray-500">
+                <p className="mb-2 text-gray-500">
                   {post.metadata.publishedAt}
                 </p>
-                <h5 className="font-medium text-sm text-gray-800">
+                <h5 className="font-medium text-gray-800">
                   {post.metadata.title}
                 </h5>
-                <p className="mt-1 text-sm text-gray-500">
-                  {post.metadata.summary}
-                </p>
+                <p className="mt-1 text-gray-500">{post.metadata.summary}</p>
                 <p className="mt-1">
                   <Link
-                    className="text-sm text-gray-500 underline hover:text-gray-800 hover:decoration-2 focus:outline-none focus:decoration-2"
-                    href={`/blog/${post.slug}`}
+                    className=" text-gray-500 underline hover:text-gray-800 hover:decoration-2 focus:outline-none focus:decoration-2"
+                    href={`/tutorial/${post.slug}`}
                   >
                     Continue reading
                   </Link>

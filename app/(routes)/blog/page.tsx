@@ -24,7 +24,9 @@ function page() {
           .map((post) => (
             <li key={post.slug}>
               <article className="flex flex-col space-y-1 mb-4">
-                <p className="mb-2 text-gray-500">2024</p>
+                <p className="mb-2 text-gray-500">
+                  {post.metadata.publishedAt}
+                </p>
                 <h5 className=" text-gray-800">{post.metadata.title}</h5>
                 <p className="mt-1 text-gray-500">{post.metadata.summary}</p>
                 <p className="mt-1">

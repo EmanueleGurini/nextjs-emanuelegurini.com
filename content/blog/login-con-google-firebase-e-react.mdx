@@ -1,0 +1,782 @@
+---
+title: "Login con Google Firebase e React"
+publishedAt: "2024-07-22"
+summary: "da completare..."
+---
+
+Come possiamo implementare un sistema di autenticazione e autorizzazione nel nostro applicativo React in modo semplice, sicuro e veloce?
+
+Esistono molte soluzioni per implementare un sistema di login, ma in questo tutorial ci concentreremo su _Google Firebase_. Questa piattaforma di Google offre una serie di strumenti (con un free molto generoso), tra cui analisi, database noSQL, messaggistica e, soprattutto, un sistema per gestire l'autenticazione e l'autorizzazione in modo semplice e sicuro all'interno del nostro applicativo.
+
+Ma prima di cominciare con il tutorial, vediamo cosa saremo in grado di fare al termine di questa guida: realizzare un'applicazione con React, che utilizza un sistema di routing gestito attraverso React Router 6. Nell'applicazione ci saranno delle rotte protette gestite da Google Firebase Authentication. Le informazioni dell'utente saranno salvate all'interno di un context.
+
+Ecco la lista degli ingredienti:
+
+- [React](https://react.dev/)
+- [Tailwind](https://tailwindcss.com/)
+- [React Router 6](https://reactrouter.com)
+- [Google Firebase Authentication](https://firebase.google.com/docs/auth)
+
+## Creazione e setup del progetto
+
+Come prima cosa, creiamo il nostro progetto React utilizzando Vite, quindi dal terminale lanciamo questo comando:
+
+```bash
+npm create vite@latest
+```
+
+Con questo comando stiamo dicendo al nostro terminale di contattare il programma _NPM_ e di ordinargli di eseguire il comando _create_ di un progetto _Vite_. _@latest_ ci serve per specificare quale versione di _Vite_ vogliamo usare per creare il nostro progetto e nel nostro caso sarà quella più recente.
+
+Nel terminale si aprirà una finestra con una serie di step da seguire. Alla fine, verrà creata la cartella del progetto. Entriamo nella cartella cd `react-firebase-auth` ed eseguiamo `npm install` per installare tutte le dipendenze.
+
+![react-install.gif](https://s3.tebi.io/tutorial/login-firebase-react/react-install.gif)
+
+Ci siamo, il nostro progetto è pronto, ora non ci resta che lanciare il comando `npm run dev`
+
+Questo è ciò che ci troviamo a schermo una volta lanciato il nostro applicativo:
+
+![Screenshot 2024-07-24 alle 15.21.14.png](https://s3.tebi.io/tutorial/login-firebase-react/tutorial-firebase-auth-react.png)
+
+Ok, caruccio, ma non è ciò che vogliamo, quindi ora cancelliamo tutto il codice che non ci interessa, così da partire da una pagina bianca e installeremo Tailwind così da semplificarci un pochino la vita, almeno in questo tutorial. (non che io non ami i CSS nudi e crudi, ma adesso non me và).
+
+Come prima cosa, cancelliamo tutto il codice che non ci interessa all’interno di `App.jsx` , fino a ottenere questo codice:
+
+```jsx
+// App.jsx
+
+function App() {
+  return (
+    <>
+      <h1>Hello, World!</h1>
+    </>
+  );
+}
+
+export default App;
+```
+
+Ora è giunto il momento di eliminare il file `App.css` che non utilizzeremo più, in quanto useremo le utility class di _Tailwind_ direttamente nei file *jsx. C*ancelliamo anche tutto il contenuto di `index.css`, dove tra poco dovremo inserire del codice che ci fornirà _Tailwind_ stesso.
+
+### Installazione di Tailwind al progetto
+
+Ora che il nostro progetto è una vera e propria tela bianca, a parte l’hello, world che non può mai mancare, possiamo aggiungere Tailwind al nostro progetto; ci aiuterà con lo stile dei componenti, anche se non ne creeremo molti.
+
+👉 Digitare nel terminale i seguenti comandi che serviranno per installare Tailwind, le sue dipendenze e generare i file di configurazione **`tailwind.config.js` e `postcss.config.js`**:
+
+```bash
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+```
+
+Qui è possibile vedere i due file di configurazione generati dal secondo comando:
+
+![Screenshot 2024-07-24 alle 15.47.39.png](https://s3.tebi.io/tutorial/login-firebase-react/tutorial-firebase-auth-react-folder-structure.png)
+
+👉 Aggiungiamo questo codice all’interno del file `tailwind.config.js`:
+
+```jsx
+// tailwind.config.js
+
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html", // <== New Line
+    "./src/**/*.{js,ts,jsx,tsx}", // <== New Line
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
+```
+
+👉 Infine, ultimo passo per completare il setup di _Tailwind_, aggiungiamo anche queste tre righe di codice nel file `index.css` :
+
+```css
+/* index.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+Anche è impostato. Per verificare che funzioni correttamente, aggiungiamo delle utility class nell’`h1`, all’interno del file `App.jsx` e vediamo che succede:
+
+```jsx
+// App.jsx
+
+function App() {
+  return (
+    <>
+      <h1 className="bg-red-500">Hello, World!</h1> {/* New Line */}
+    </>
+  );
+}
+
+export default App;
+```
+
+Aggiungendo un `bg-red-500` all’h1 il risultato dovrebbe essere il seguente. Se anche tu vedi il mio stesso risultato, allora hai impostato tutto correttamente.
+
+![Screenshot 2024-07-24 alle 16.00.19.png](https://s3.tebi.io/tutorial/login-firebase-react/tutorial-firebase-auth-react-hello-world-iniziale.png)
+
+> Attenzione: potresti aver bisogno di interrompere il server con un `ctrl + c` ed eseguire nuovamente un `npm run dev`.
+
+Pensavi che fosse finita qui?
+
+E invece no, ora installiamo e impostiamo React Router (ma chi me l’ha fatto fa?!).
+
+### Installiazione e setup di React Router
+
+Per gestire la navigazione all’interno dell’applicazione avremo bisogno di un ulteriore set di funzionalità che ci viene fornito attraverso la libreria React Router.
+
+👉 Lanciare questo comando da terminale per installare React Router (RR):
+
+```bash
+npm install react-router-dom
+```
+
+Una volta installato React Router, apriamo il file `App.jsx` e configuriamo il router che gestirà la navigazione all'interno della nostra applicazione.
+
+Per creare il router, utilizziamo la funzione `createBrowserRouter` fornita dalla libreria React Router. Questa funzione accetta un array di rotte, ciascuna rappresentata come un oggetto. La rotta principale restituirà l’elemento h1 che avevamo precedentemente all’interno di `<App />`
+
+Per distribuire le regole del router in tutta l'applicazione, utilizziamo il componente `RouterProvider`. Questo componente viene restituito dalla funzione `App`, permettendo la gestione della navigazione a livello globale. Il componente RouterProvider ora contiene tutto il nostro applicativo.
+
+Ecco come appare il codice aggiornato:
+
+```jsx
+// App.jsx
+
+import { createBrowserRouter, RouterProvider } from "react-router-dom"; // <== New Line
+
+const router = createBrowserRouter([
+  // <== New Line
+  {
+    // <== New Line
+    path: "/", // <== New Line
+    element: <h1 className="bg-red-500">Hello, World!</h1>, // <== New Line
+  }, // <== New Line
+]); // <== New Line
+
+function App() {
+  return <RouterProvider router={router} />; // <== New Line
+}
+
+export default App;
+```
+
+Per una maggiore pulizia e organizzazione del codice, creiamo una pagina/componente Home e facciamogli restituire `<h1 className="bg-red-500">Hello, Home!</h1>` . Poi importiamo il componente `<Home />`, che abbiamo creato, in `App.jxs` e lo associamo al `path: “/”` .
+
+👉 In `src` creiamo una cartella _pages_ e al suo interno creiamo il file `Home.jsx` :
+
+```jsx
+// src/pages/Home.jsx
+
+function Home() {
+  return <h1 className="bg-red-500">Hello, World!</h1>;
+}
+
+export default Home;
+```
+
+Importiamo il componente `<Home />` in App.jsx
+
+```jsx
+// App.jsx
+
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Home from "./pages/Home";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home />, // <== New Line
+  },
+]);
+
+function App() {
+  return <RouterProvider router={router} />;
+}
+
+export default App;
+```
+
+Ci siamo, ora il setup del nostro progetto è completo e il nostro applicativo, ogni volta che sarà sulla rotta principale, [`http://localhost:5173/`](http://localhost:5173/) ci restituirà il componente `<Home />` .
+
+Ora che il setup del nostro applicativo è pronto, possiamo dedicarci a processo di autenticazione e autorizzazione attraverso Google Firebase.
+
+## Setup di Google Firebase
+
+Come prima cosa, dobbiamo creare il nostro primo progetto in nella piattaforma Firebase. Per farlo, da browser, rechiamoci a questo url https://console.firebase.google.com/. Si aprirà questa finestra:
+
+![Screenshot 2024-07-24 alle 17.27.06.png](https://s3.tebi.io/tutorial/login-firebase-react/tutorial-firebase-auth-react-piattaforma-firebase.png)
+
+Clicchiamo su Inizia con un nuovo progetto Firebase e seguiamo i seguenti passaggi:
+
+[create-firebase-project.mp4](https://s3.tebi.io/tutorial/login-firebase-react/create-firebase-project.mp4)
+
+In questo modo abbiamo creato il nostro primo progetto Firebase.
+
+Ora non ci resta che assegnare al nostro progetto Firebase una web app, come nel video qui di seguito:
+
+[create-firebase-project-1.mp4](https://s3.tebi.io/tutorial/login-firebase-react/create-firebase-project-1.mp4)
+
+Ora che abbiamo creato il nostro primo progetto Firebase e registrato la nostra webapp, dobbiamo eseguire il comando `npm install firebase` dal nostro applicativo per installare l’_SDK_ (_Software Development Kit_). Un SDK è un insieme di strumenti, librerie, documentazione e campioni di codice che permette agli sviluppatori di utilizzare tutte le funzionalità offerte da _Firebase_ all’interno del loro applicativo.
+
+Non ci resta configurare Firebase all’interno del nostro codice. Per farlo, nella root principale del nostro progetto react, creiamo un file chiamato `firebaseconfig.js`, dove inseriremo i dati di configurazione del nostro progetto Firebase. Il codice da copiare e incollare nel `firebaseconfig.js` è quello che ci viene restituito nel browser una vota registrata la nostra webapp. In questa schermata:
+
+![Screenshot 2024-07-24 alle 19.45.16.png](https://s3.tebi.io/tutorial/login-firebase-react/tutorial-firebase-auth-react-firebase-config.png)
+
+> Mi raccomando, non lasciamo API Key in chiaro nel nostro applicativo. Tutti i dati sensibili li inseriamo in un file `.env`
+
+```jsx
+// firebaseconfig.js
+
+export const firebaseConfig = {
+  apiKey: "AIzaSyBcB5EMUuKRwYk9r17DQ27SqtxTbmEnx4c", // <== Questo è un dato sensibile da portare nel .env
+  authDomain: "react-firebase-63758.firebaseapp.com",
+  projectId: "react-firebase-63758",
+  storageBucket: "react-firebase-63758.appspot.com",
+  messagingSenderId: "217149329938",
+  appId: "1:217149329938:web:c93d54793bf0bc6b143ecb",
+  measurementId: "G-56TENJR1XJ",
+};
+```
+
+Ecco come dovrebbe essere il nostro codice nella maniera corretta:
+
+```jsx
+// firebaseconfig.js
+
+export const firebaseConfig = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY, // <== New Line
+  authDomain: "react-firebase-63758.firebaseapp.com",
+  projectId: "react-firebase-63758",
+  storageBucket: "react-firebase-63758.appspot.com",
+  messagingSenderId: "217149329938",
+  appId: "1:217149329938:web:c93d54793bf0bc6b143ecb",
+  measurementId: "G-56TENJR1XJ",
+};
+```
+
+Infine, nel `main.jsx` creiamo un’istanza di _Firebase_:
+
+```jsx
+// src/main.jsx
+
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App.jsx";
+import { initializeApp } from "firebase/app"; // New Line
+import { firebaseConfig } from "../firebaseconfig.js"; // New Line
+import "./index.css";
+
+// Initialize Firebase
+initializeApp(firebaseConfig); // New Line
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+```
+
+Ci siamo, ora possiamo concentrarci definitamente sul nostro codice.
+
+Era ora direi 😪
+
+## Signup e signin
+
+È il momento di dedicarsi alle pagine di Signin e Signup, ossia _accedere a un account esistente_ e _creare un nuovo account_.
+
+Nella cartella pages creiamo i file SignIn.jsx e SignUp.jsx. Al loro interno inseriamo i seguenti codici:
+
+```jsx
+// src/pages/SignIn.jsx
+
+function SignIn() {
+  return <div>SignIn page</div>;
+}
+
+export default SignIn;
+```
+
+```jsx
+// src/pages/SignUp.jsx
+
+function SignUp() {
+  return <div>SignUp page</div>;
+}
+
+export default SignUp;
+```
+
+All’interno del file `App.jsx` aggiorniamo il router implementando due nuove rotte, una per la pagina di signin e un’altra per quella di signup:
+
+```jsx
+// src/App.jsx
+
+/*
+ *
+ * Codice precedente
+ */
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Home />,
+  },
+  {
+    path: "signin", // New Line
+    element: <SignIn />, // New Line
+  },
+  {
+    path: "signup", // New Line
+    element: <SignUp />, // New Line
+  },
+]);
+
+/*
+ *
+ * Codice successivo
+ */
+```
+
+Se proviamo a navigare su queste due rotte, per testare il funzionamento del nostro router, ci troveremo di fronte a questa situazione:
+
+![Untitled.gif](https://s3.tebi.io/tutorial/login-firebase-react/tutorial-firebase-auth-router-test.gif)
+
+### Implementazione del sign-up
+
+Una volta create le pagine di Sign-in e Sign-up e aver istruito il router a restituire questi componenti (pagine) ogni volta che atterriamo sulle specifiche rotte, è il momento di dedicarsi al contenuto vero e proprio delle pagine di sign-up e sign-in.
+
+Incominceremo dalla pagina di Sing-up che deve contenere una form con tre valori di input:
+
+1. email dell’utente;
+2. password dell’utente;
+3. password di conferma dell’utente.
+
+Se la password del punto due non sarà identica alla password del punto tre, non sarà possibile confermare la form per in i dati di registrazione dell’utente.
+
+Seguendo le nostre indicazioni e necessità, il codice della pagina sign-up diventerà così:
+
+```jsx
+// src/pages/SignUp.jsx
+
+import { useState } from "react";
+
+function SignUp() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPass, setConfirmPass] = useState("");
+
+  // validazione input della form
+  const emailValidation = !email.length;
+  const passwordValidation = !password.length;
+  const confirmPasswordValidation = !confirmPass.length;
+  const arePasswordAncConfirmPassEqual = password !== confirmPass;
+
+  // validazione della form
+  const formValidation =
+    emailValidation ||
+    passwordValidation ||
+    confirmPasswordValidation ||
+    arePasswordAncConfirmPassEqual;
+
+  // istruzioni da eseguire al submit della form
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  };
+
+  return (
+    <div className="flex flex-col p-2">
+      <h1>SignUp page</h1>
+      <form className="w-[400px] flex flex-col gap-2" onSubmit={handleSubmit}>
+        <input
+          className="border-2 border-slate-400 p-2"
+          placeholder="Email"
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          className="border-2 border-slate-400 p-2"
+          placeholder="Password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <input
+          className="border-2 border-slate-400 p-2"
+          placeholder="Confirm Password"
+          onChange={(e) => setConfirmPass(e.target.value)}
+        />
+        <button
+          className={`bg-green-700 ${formValidation ? "bg-green-200" : ""} p-2`}
+          disabled={formValidation}
+          type="submit"
+        >
+          Sing-up
+        </button>
+      </form>
+    </div>
+  );
+}
+
+export default SignUp;
+```
+
+Al momento del _submit_, come è possibile vedere dalla funzione di `handleSubmit`, il codice non esegue nessuna istruzione a parte un `preventDefault`.
+
+Ecco comunque il risultato finale:
+
+![sign-up-form-test.gif](https://s3.tebi.io/tutorial/login-firebase-react/sign-up-form-test.gif)
+
+È il momento di utilizzare Firebase e le sue funzionalità per gestire la registrazione degli utenti (sign-up).
+
+In questo caso, importeremo le funzioni `getAuth` e `createUserWithEmailAndPassword` nel nostro file `SignUp.jsx`. Come possiamo vedere, Google Firebase offre funzioni che fanno al caso nostro proprio per questa specifica situazione e non ci sarà bisogno di reinventare la ruota.
+
+Implementiamo il codice della pagina di SignUp in questa maniera:
+
+```jsx
+// src/pages/SignUp.jsx
+
+import { useState } from "react";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth"; // New Line
+
+function SignUp() {
+  const auth = getAuth(); // New Line
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPass, setConfirmPass] = useState("");
+
+  const emailValidation = !email.length;
+  const passwordValidation = !password.length;
+  const confirmPasswordValidation = !confirmPass.length;
+  const arePasswordAncConfirmPassEqual = password !== confirmPass;
+
+  const formValidation =
+    emailValidation ||
+    passwordValidation ||
+    confirmPasswordValidation ||
+    arePasswordAncConfirmPassEqual;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    createUserWithEmailAndPassword(auth, email, password) // New Line
+      .then((user) => console.log(user)) // New Line
+      .catch((error) => console.log(error)); // New Line
+  };
+
+  return (
+    <div className="flex flex-col p-2">
+      <h1>SignUp page</h1>
+      <form className="w-[400px] flex flex-col gap-2" onSubmit={handleSubmit}>
+        <input
+          className="border-2 border-slate-400 p-2"
+          placeholder="Email"
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          className="border-2 border-slate-400 p-2"
+          placeholder="Password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <input
+          className="border-2 border-slate-400 p-2"
+          placeholder="Confirm Password"
+          onChange={(e) => setConfirmPass(e.target.value)}
+        />
+        <button
+          className={`bg-green-700 ${formValidation ? "bg-green-200" : ""} p-2`}
+          disabled={formValidation}
+          type="submit"
+        >
+          Sing-up
+        </button>
+      </form>
+    </div>
+  );
+}
+
+export default SignUp;
+```
+
+Prima di testare il codice dobbiamo fare un’ultima cosa, ossia attivare il servizio di autenticazione in Firebase e attivare l’email provider:
+
+[firebase-auth-activation.mp4](https://s3.tebi.io/tutorial/login-firebase-react/firebase-auth-activation.mp4)
+
+Una attivato il provider di autenticazione di Firebase, possiamo provare la prima registrazione di un utente:
+
+[sign-up-test.mp4](https://s3.tebi.io/tutorial/login-firebase-react/sign-up-test.mp4)
+
+### Implementazione del sing-in
+
+Ora che il modulo di registrazione funziona egregiamente, è arrivato il momento di procedere con l’implementazione del sistema di singin. Siccome il modulo di signin non è tanto diverso da quello di signup, se non per alcuni dettagli, faremo ciò per cui noi sviluppatori siamo famosi in tutto il mondo: copia e incolla.
+
+![drift-boss.gif](https://s3.tebi.io/tutorial/login-firebase-react/drift-boss.gif)
+
+👉 Nel file SignIn.jsx implementiamo questo codice:
+
+```jsx
+// src/pages/SignIn.jsx
+
+import { useState } from "react";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth"; // New Line
+import { useNavigate } from "react-router-dom"; // New Line
+
+function SignIn() {
+  const auth = getAuth();
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const emailValidation = !email.length;
+  const passwordValidation = !password.length;
+
+  const formValidation = emailValidation || passwordValidation;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    /*
+     *
+     * Utilizzo la funzione signInWithEmailAndPassword
+     * invece di createUserWithEmailAndPassword
+     */
+    signInWithEmailAndPassword(auth, email, password) // New Line
+      .then((user) => {
+        console.log(user);
+
+        /*
+         *
+         * Se il signin va a buon fine
+         * vengo indirizzato alla pagina home
+         */
+        navigate("/"); // New Line
+      })
+      .catch((error) => console.log(error));
+  };
+
+  return (
+    <div className="flex flex-col p-2">
+      <h1>SignIn page</h1>
+      <form className="w-[400px] flex flex-col gap-2" onSubmit={handleSubmit}>
+        <input
+          className="border-2 border-slate-400 p-2"
+          placeholder="Email"
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          className="border-2 border-slate-400 p-2"
+          placeholder="Password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button
+          className={`bg-green-700 ${formValidation ? "bg-green-200" : ""} p-2`}
+          disabled={formValidation}
+          type="submit"
+        >
+          Sing-up
+        </button>
+      </form>
+    </div>
+  );
+}
+
+export default SignIn;
+```
+
+Questa volta, essendo una pagina di signin, non ho bisogno di tutti i controlli di validazione della form che utilizzavamo in precedenza, per controllare che le password inserite fossero identiche prima di creare il profilo.
+
+Per fare il signin, Firebase ci mette a disposizione un’altra funzionalità, ossia il signInWithEmailAndPassword che utilizzeremo al posto di createUserWithEmailAndPassword.
+
+Qui il codice in azione:
+
+[sign-in-test.mp4](https://s3.tebi.io/tutorial/login-firebase-react/sign-in-test.mp4)
+
+Una volta registrati e loggati all’interno di un’applicativo, non ci resta che implementare anche la funzionalità di Signout.
+
+### Implementiamo il signout
+
+Il nostro obiettivo ora è implementare la funzionalità di signout nella pagina Home.
+
+Per farlo, utilizzeremo le funzionalità di `getAuth` e il `signOut` che ci mette a disposizione Firebase direttamente dalla libreria che abbiamo utilizzato fino a questo momento.
+
+👉 Implementiamo il codice del file Home.jsx come segue:
+
+```jsx
+// src/pages/Home.jsx
+
+import { signOut, getAuth } from "firebase/auth";
+
+function Home() {
+  const auth = getAuth();
+
+  const handleClick = () => {
+    signOut(auth)
+      .then((res) => console.log(res))
+      .catch((error) => console.log(error));
+  };
+
+  return (
+    <div className="flex flex-col w-[300px]">
+      <h1>Hello, World!</h1>
+      <p>
+        Questa è la pagina home, volendo puoi anche fare un Signout premendo su
+        questo bottone 👇👇👇{" "}
+      </p>
+      <button onClick={handleClick} className="bg-red-500 p-2">
+        Sign Out
+      </button>
+    </div>
+  );
+}
+
+export default Home;
+```
+
+In questo caso, il processo di _signout_ è piuttosto semplice. Per verificare il corretto funzionamento del _signout_, configureremo React Router in modo che alcune rotte dell'applicazione siano protette e accessibili solo agli utenti autenticati.
+
+Dopo aver effettuato il _signout_, l'utente verrà reindirizzato a pagine di accesso pubblico, alle quali non si potrà accedere senza essere registrati e loggati.
+
+## Proteggere le rotte con un context
+
+All'interno della cartella `src`, creiamo una nuova cartella chiamata `context`, e al suo interno, un file chiamato `AuthContext.jsx`.
+
+Il file `AuthContext.jsx` conterrà i context predisposti a mantenere nella memoria dell'applicazione i dati dell'utente autenticato. In questo file, importeremo `useState`, `createContext` e `useEffect` dalla libreria di React, e le funzionalità `getAuth` e `onAuthStateChanged` da Firebase.
+
+Quest'ultima funzione monitora le richieste di sign-in e sign-out inviate a Firebase e aggiorna lo stato dell'applicazione di conseguenza.
+
+Implementiamo il seguente codice nel file `AuthContext.jsx`:
+
+```jsx
+// src/context/AuthContext.jsx
+
+// Importiamo le funzioni e gli hook necessari da React e Firebase.
+import { useState, useEffect, createContext } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
+// Creiamo due contesti, uno per l'utente e uno per la funzione che permette di impostare l'utente.
+export const UserContext = createContext();
+export const SetUserContext = createContext();
+
+// Definiamo il componente AuthContext che avvolgerà i componenti figli con i contesti definiti sopra.
+function AuthContext({ children }) {
+  // Otteniamo l'oggetto auth dall'SDK di Firebase.
+  const auth = getAuth();
+
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Configuriamo un listener per i cambiamenti dello stato di autenticazione.
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      // Una volta ottenuto il risultato, impostiamo isLoading a false.
+      setIsLoading(false);
+
+      // Se c'è un utente autenticato, aggiorniamo lo stato dell'utente, altrimenti lo impostiamo a null.
+      if (currentUser) {
+        setUser(currentUser);
+      } else {
+        setUser(null);
+      }
+    });
+
+    // Puliamo l'effetto restituendo una funzione che annulla l'iscrizione al listener quando il componente viene smontato.
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, [auth]);
+
+  // Restituiamo i componenti Provider per entrambi i contesti, avvolgendo i componenti figli passati come children.
+  // Passiamo il valore dell'utente e della funzione setUser rispettivamente ai contesti UserContext e SetUserContext.
+  // Visualizziamo i componenti figli solo se il caricamento è terminato.
+  return (
+    <SetUserContext.Provider value={{ setUser }}>
+      <UserContext.Provider value={{ user }}>
+        {!isLoading && children}
+      </UserContext.Provider>
+    </SetUserContext.Provider>
+  );
+}
+
+// Esportiamo il componente AuthContext per l'utilizzo in altre parti dell'applicazione.
+export default AuthContext;
+```
+
+### Un componente per monitorare le richieste di rotta dell’utente
+
+Una volta implementato il nostro context, abbiamo bisogno di un componente che monitori le richieste di routing all'interno dell'applicazione e verifichi se l'utente è autenticato e ha i permessi necessari.
+
+Se l'utente non è autenticato e tenta di accedere a una rotta protetta, verrà reindirizzato alla pagina di login. Se invece l'utente è autenticato, verrà indirizzato direttamente alla Home.
+
+Nella cartella pages creiamo il file `Protected.jsx` e implementiamoci questo codice:
+
+```jsx
+// src/pages/Protected.jsx
+
+import { Navigate } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../context/AuthContext";
+
+export function Protected({ children }) {
+  const { user } = useContext(UserContext);
+
+  if (!user) {
+    return <Navigate to="/signin" replace />;
+  } else {
+    return children;
+  }
+}
+```
+
+### Aggiorniamo il router
+
+Aggiorniamo il componente `App` importando `AuthContext` e il componente `Protected`. `AuthContext` avvolgerà l'intera applicazione, distribuendo i dati del contesto a tutti i componenti. `Protected` avvolgerà il componente `<Home />`, gestendo le richieste degli utenti e verificando se sono autenticati.
+
+```jsx
+// src/App.jsx
+
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import Home from "./pages/Home";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
+import { Protected } from "./pages/Protected";
+import AuthContext from "./context/AuthContext";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: (
+      <Protected>
+        <Home />
+      </Protected>
+    ),
+  },
+  {
+    path: "signin",
+    element: <SignIn />,
+  },
+  {
+    path: "signup",
+    element: <SignUp />,
+  },
+]);
+
+function App() {
+  return (
+    <AuthContext>
+      <RouterProvider router={router} />
+    </AuthContext>
+  );
+}
+
+export default App;
+```
+
+### Risultato finale
+
+Et voilà! Funziona tutto perfettamente!
+
+![risultato-finale.gif](https://s3.tebi.io/tutorial/login-firebase-react/risultato-finale.gif)
+
+Chiaramente, questo è solo un piccolo esempio di ciò che possiamo fare con Google Firebase perché le funzionalità e i servizi che ci mette a disposizione questo strumento sono davvero tanti.
