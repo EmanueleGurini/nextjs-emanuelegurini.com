@@ -1,9 +1,20 @@
 import { getTutorialPosts } from "@/app/(db)/blog";
+import { Metadata } from "next";
 import Link from "next/link";
 
-export const metadata = {
-  title: "Tutorial",
-  description: "Read my thoughts on software development, design, and more.",
+export const metadata: Metadata = {
+  title:
+    "Tutorial di Programmazione di Emanuele Gurini: Front-end, Backend e Cloud",
+  description:
+    "Accedi ai tutorial gratuiti di Emanuele Gurini su programmazione Front-end, Backend con Node.js e Cloud con AWS e Google Cloud. Impara con esercizi pratici e progetti reali per sviluppare le tue competenze tecniche.",
+  keywords: [
+    "tutorial programmazione",
+    "front-end",
+    "backend",
+    "cloud",
+    "Emanuele Gurini",
+    "esercizi pratici",
+  ],
 };
 
 function page() {
@@ -37,7 +48,7 @@ function page() {
                     className=" text-gray-500 underline hover:text-gray-800 hover:decoration-2 focus:outline-none focus:decoration-2"
                     href={`/tutorial/${post.slug}`}
                   >
-                    Continue reading
+                    Continua a leggere
                   </Link>
                 </p>
               </article>
