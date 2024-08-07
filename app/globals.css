@@ -21,7 +21,16 @@
 
 html {
   min-width: 360px;
-  font-family: var(--font-ss4);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-bricolage-grotesque);
+}
+
+p {
+  font-family: var(--font-nunito);
 }
 
 .prose .anchor {

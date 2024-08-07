@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { Metadata } from "next";
 
+import { Button } from "@headlessui/react";
+
 export const metadata: Metadata = {
   title:
     "Impara a programmare con Emanuele Gurini: Tutorial Front-end, Backend e Cloud",
@@ -15,114 +17,218 @@ export const metadata: Metadata = {
   ],
 };
 
+const posts = [
+  {
+    id: 1,
+    title: "Sviluppo Frontend",
+    description:
+      "Illo sint voluptas. Error voluptates culpa eligendi. Hic vel totam vitae illo. Non aliquid explicabo necessitatibus unde. Sed exercitationem placeat consectetur nulla deserunt vel. Iusto corrupti dicta.",
+  },
+  {
+    id: 2,
+    title: "Sviluppo Cloud",
+    description:
+      "Illo sint voluptas. Error voluptates culpa eligendi. Hic vel totam vitae illo. Non aliquid explicabo necessitatibus unde. Sed exercitationem placeat consectetur nulla deserunt vel. Iusto corrupti dicta.",
+    date: "Mar 16, 2020",
+    datetime: "2020-03-16",
+  },
+  {
+    id: 3,
+    title: "Coaching e formazione",
+    description:
+      "Illo sint voluptas. Error voluptates culpa eligendi. Hic vel totam vitae illo. Non aliquid explicabo necessitatibus unde. Sed exercitationem placeat consectetur nulla deserunt vel. Iusto corrupti dicta.",
+    date: "Mar 16, 2020",
+    datetime: "2020-03-16",
+  },
+];
+import {
+  ArrowPathIcon,
+  CloudArrowUpIcon,
+  FingerPrintIcon,
+  LockClosedIcon,
+} from "@heroicons/react/24/outline";
+
+const features = [
+  {
+    name: "Push to deploy",
+    description:
+      "Morbi viverra dui mi arcu sed. Tellus semper adipiscing suspendisse semper morbi. Odio urna massa nunc massa.",
+    icon: CloudArrowUpIcon,
+  },
+  {
+    name: "SSL certificates",
+    description:
+      "Sit quis amet rutrum tellus ullamcorper ultricies libero dolor eget. Sem sodales gravida quam turpis enim lacus amet.",
+    icon: LockClosedIcon,
+  },
+  {
+    name: "Simple queues",
+    description:
+      "Quisque est vel vulputate cursus. Risus proin diam nunc commodo. Lobortis auctor congue commodo diam neque.",
+    icon: ArrowPathIcon,
+  },
+  {
+    name: "Advanced security",
+    description:
+      "Arcu egestas dolor vel iaculis in ipsum mauris. Tincidunt mattis aliquet hac quis. Id hac maecenas ac donec pharetra eget.",
+    icon: FingerPrintIcon,
+  },
+];
+
 export default function Home() {
   return (
     <main>
-      <div className="mx-auto max-w-2xl pb-12 sm:pb-12 lg:pb-24 lg:pt-6">
-        <div>
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-            Impara a programmare
-          </h1>
-          <p className="mt-6 text-lg leading-8 text-gray-600">
-            Tutorial e guide per Frontend, Backend e Cloud.
-          </p>
-          <div className="mt-10 flex items-center gap-x-6">
-            <Link
-              href={"/tutorial"}
-              className="rounded-md bg-slate-900 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              Tutorial
-            </Link>
-            <Link
-              href="/about"
-              className="text-sm font-semibold leading-6 text-gray-900"
-            >
-              Chi sono <span aria-hidden="true">→</span>
-            </Link>
+      <div className="overflow-hidden bg-white py-6 sm:py-6">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
+            <div className="lg:pr-8 lg:pt-4">
+              <div className="lg:max-w-lg">
+                <h1 className="text-base font-semibold leading-7 text-green-700">
+                  SVILUPPO SOFTWARE EMANUELE GURINI
+                </h1>
+                <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+                  IL TUO SPECIALISTA DEL SOFTWARE QUANDO NE HAI BISOGNO
+                </h2>
+                <p className="mt-6 text-lg leading-8">
+                  Ciao! Sono <strong>Emanuele Gurini</strong>, fractional
+                  software engineer con competenze avanzate in{" "}
+                  <strong>
+                    frontend development, cloud development, React, Next.js, e
+                    Node.js
+                  </strong>
+                  . Offro soluzioni personalizzate e supporto tecnico per il
+                  sviluppo software su misura delle tue esigenze, garantendo
+                  risultati concreti e scalabili.
+                </p>
+                <p className="mt-6 text-lg leading-8">
+                  Come fractional software engineer, ti offro la flessibilità di
+                  cui hai bisogno per integrare le mie competenze nel tuo team o
+                  progetto senza impegni a lungo termine.
+                </p>
+                <Button className="my-6 rounded bg-green-700 py-2 px-4 text-sm text-white uppercase data-[hover]:bg-green-800 data-[active]:bg-green-700">
+                  Contattami ora
+                </Button>
+              </div>
+            </div>
+            <img
+              alt="Product screenshot"
+              src="https://tailwindui.com/img/component-images/dark-project-app-screenshot.png"
+              width={2432}
+              height={1442}
+              className="w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem] md:-ml-4 lg:-ml-0"
+            />
           </div>
         </div>
       </div>
 
-      <section className="prose prose-quoteless prose-neutral">
-        <h3>Benvenuto nel mondo della programmazione libera e accessibile</h3>
-        <p>
-          Ciao! Sono Emanuele Gurini e questo è un luogo dedicato
-          all'apprendimento della programmazione. La programmazione può sembrare
-          un mondo complicato e inaccessibile. Molti si sentono sopraffatti
-          dalla quantità di risorse disponibili online e non sanno da dove
-          cominciare.
-        </p>
-        <p>
-          E se ci fosse un modo per imparare a programmare con risorse di
-          qualità che qualcuno ha già provveduto a selezionare?
-        </p>
+      <div className="bg-yellow-300 py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto max-w-4xl lg:text-center">
+            <p className="mt-6 text-lg leading-8 text-black">
+              <strong>Emanuele</strong> è un esperto dello sviluppo software.
+              Sviluppa dal 2016 e in questi anni ha potuto toccare moltissimi
+              aspetti dello sviluppo: dal Frontend al Cloud, con AWS Inoltre si
+              occupa di formazione e coaching per aspiranti programmatori,
+              partendo dalle basi dello sviluppo e della programmazione.
+            </p>
+          </div>
+        </div>
+      </div>
 
-        <h3>Il problema della complessità dell'apprendimento</h3>
-        <p>
-          Viviamo in un mondo dove la tecnologia evolve rapidamente, e stare al
-          passo è una sfida continua. La difficoltà di trovare risorse
-          affidabili e accessibili può rallentare il tuo percorso di
-          apprendimento.
-        </p>
-
-        <h3>La mia soluzione: Risorse di qualità per tutti</h3>
-        <p>
-          Credo fortemente nel rendere la conoscenza accessibile a tutti. Sul
-          mio portale troverai:
-        </p>
-        <ul>
-          <li>
-            <strong>Tutorial e guide complete:</strong> Dalla programmazione
-            front-end al backend con Node.js, fino al cloud computing su AWS e
-            Google Cloud;
-          </li>
-          <li>
-            <strong>Risorse gratuite:</strong> Una vasta selezione di contenuti
-            gratuiti;
-          </li>
-          <li>
-            <strong>Approccio pratico e interattivo:</strong> Impara facendo,
-            con esempi pratici e progetti reali.
-          </li>
-        </ul>
-        <h3>Impara programmando</h3>
-        <p>
-          La programmazione si impara programmando: poniti un obiettivo, cerca
-          di realizzarlo e impara a programmare risolvendo i problemi che si
-          presentano. Questa filosofia è alla base del mio metodo di
-          insegnamento, che ti guida passo dopo passo attraverso esercitazioni
-          pratiche e progetti concreti.
-        </p>
-        <h3>Cosa offro:</h3>
-        <ul>
-          <li>
-            <strong>Imparare a programmare:</strong> Accedi a tutorial
-            dettagliati e facili da seguire per iniziare il tuo viaggio nel
-            mondo della programmazione;
-          </li>
-          <li>
-            <strong>Front-end e Cloud:</strong> Scopri le ultime tecnologie
-            front-end e le migliori pratiche per il cloud computing;
-          </li>
-          <li>
-            <strong>Tutorial e guide:</strong> Risorse sempre aggiornate per
-            garantirti un apprendimento efficace e all'avanguardia;
-          </li>
-        </ul>
-
-        <h3>Inizia ora!</h3>
-        <p>
-          Non perdere l'occasione di migliorare le tue competenze e di
-          avventurarti nel mondo della programmazione. Visita le mie sezioni di
-          tutorial e guide e inizia a imparare oggi stesso!
-        </p>
-        <h3>Contattami</h3>
-        <p>
-          Hai domande o vuoi saperne di più sui miei contenuti? Non esitare a
-          contattarmi. Sono qui per aiutarti a raggiungere i tuoi obiettivi di
-          apprendimento.
-        </p>
-      </section>
+      <div className="bg-white py-24 sm:py-32">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto text-center lg:mx-0">
+            <p className=" uppercase font-bold tracking-tight text-gray-900 ">
+              Sviluppo Software
+            </p>
+            <h2 className="mt-2 text-lg leading-8 sm:text-4xl">
+              I servizi che offro:
+            </h2>
+          </div>
+          <div className="mx-auto mt-10 grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:mt-16 lg:mx-0 lg:max-w-none lg:grid-cols-3">
+            {posts.map((post) => (
+              <article
+                key={post.id}
+                className="relative overflow-hidden rounded-lg shadow transition hover:shadow-lg"
+              >
+                <img
+                  alt=""
+                  src="https://images.unsplash.com/photo-1661956602116-aa6865609028?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=764&q=80"
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+                <div className="relative bg-gradient-to-t from-gray-900/50 to-gray-900/25 pt-32 sm:pt-48 lg:pt-64">
+                  <div className="p-4 sm:p-6">
+                    <h3 className="mt-0.5 uppercase text-lg text-white">
+                      {post.title}
+                    </h3>
+                    <p className="mt-2 line-clamp-3 text-sm/relaxed text-white/95">
+                      {post.description}
+                    </p>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="overflow-hidden bg-white py-6 sm:py-6">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none lg:grid-cols-2">
+            <div className="lg:pr-8 lg:pt-4">
+              <div className="lg:max-w-lg">
+                <h2 className="mt-2 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+                  Vuoi imparare a programmare?
+                </h2>
+                <p className="mt-6 text-lg leading-8 text-gray-600">
+                  Credo fortemente che la conoscenza debba essere accessibile a
+                  tutti. Su questo sito troverai:
+                </p>
+                <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-600 lg:max-w-none">
+                  <div className="relative pl-9">
+                    <dt className="inline font-semibold text-gray-900">
+                      Tutorial e guide complete:
+                    </dt>{" "}
+                    <dd className="inline">
+                      Dalla programmazione front-end al backend con Node.js,
+                      fino al cloud computing su AWS e Google Cloud;
+                    </dd>
+                  </div>
+                </dl>
+                <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-600 lg:max-w-none">
+                  <div className="relative pl-9">
+                    <dt className="inline font-semibold text-gray-900">
+                      Risorse gratuite:
+                    </dt>{" "}
+                    <dd className="inline">
+                      Una vasta selezione di contenuti gratuiti;
+                    </dd>
+                  </div>
+                </dl>
+                <dl className="mt-10 max-w-xl space-y-8 text-base leading-7 text-gray-600 lg:max-w-none">
+                  <div className="relative pl-9">
+                    <dt className="inline font-semibold text-gray-900">
+                      Approccio pratico e itnerattivo:
+                    </dt>{" "}
+                    <dd className="inline">
+                      Impara facendo, con esempi pratici e progetti reali.
+                    </dd>
+                  </div>
+                </dl>
+                <Button className="my-6 rounded bg-green-700 py-2 px-4 text-sm text-white uppercase data-[hover]:bg-green-800 data-[active]:bg-green-700">
+                  Tutorial
+                </Button>
+              </div>
+            </div>
+            <img
+              alt="Product screenshot"
+              src="https://tailwindui.com/img/component-images/dark-project-app-screenshot.png"
+              width={2432}
+              height={1442}
+              className="w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem] md:-ml-4 lg:-ml-0"
+            />
+          </div>
+        </div>
+      </div>
     </main>
   );
 }

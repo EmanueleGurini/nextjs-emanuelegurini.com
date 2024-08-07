@@ -1,7 +1,15 @@
-import { Source_Serif_4 } from "next/font/google";
+import { Nunito, Bricolage_Grotesque } from "next/font/google";
 
-export const ss4 = Source_Serif_4({
-  weight: ["400"],
-  variable: "--font-ss4",
+// https://nextjs.org/docs/app/building-your-application/optimizing/fonts
+
+export const nunito = Nunito({
+  weight: ["400", "700"],
+  variable: "--font-nunito",
+  subsets: ["latin"],
+});
+
+export const bricolageGrotesque = Bricolage_Grotesque({
+  weight: "700",
+  variable: "--font-bricolage-grotesque",
   subsets: ["latin"],
 });
