@@ -110,19 +110,42 @@ export default function Tutorial({ params }) {
           }),
         }}
       />
-      <h1 className="title font-medium text-2xl tracking-tighter max-w-[650px]">
-        {post.metadata.title}
-      </h1>
-      <div className="flex justify-between items-center mt-2 mb-8 max-w-[650px]">
-        <Suspense fallback={<p className="h-5" />}>
-          <p className="text-sm text-neutral-600">
-            {formatDate(post.metadata.publishedAt)}
-          </p>
-        </Suspense>
+      <div className="overflow-hidden bg-pink-300 text-[#db2777] py-6 sm:py-6">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none ">
+            <div className="lg:pr-8 lg:pt-4">
+              <div className="lg:max-w-xl">
+                <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
+                  {post.metadata.title}
+                </h2>
+                <h1 className="text-base font-semibold leading-7 text-pink-600">
+                  Scritto da Emanuele Gurini
+                  <Suspense fallback={<p className="h-5" />}>
+                    <p className="text-sm">
+                      {formatDate(post.metadata.publishedAt)}
+                    </p>
+                  </Suspense>
+                </h1>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <article className="prose prose-quoteless prose-neutral">
-        <CustomMDX source={post.content} />
-      </article>
+
+      <div className="overflow-hidden py-6 sm:py-6">
+        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+          <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 sm:gap-y-20 lg:mx-0 lg:max-w-none ">
+            <div className="lg:pr-8 lg:pt-4">
+              <div className="lg:max-w-xl">
+                <div className="flex justify-between items-center mt-2 mb-8 max-w-[650px]"></div>
+                <article className="prose prose-quoteless prose-neutral">
+                  <CustomMDX source={post.content} />
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }
