@@ -114,7 +114,7 @@ export default function Home() {
                 </Link>
               </div>
             </div>
-            <div className="flex items-center max-w-none overflow-hidden  md:-ml-4 lg:-ml-0">
+            {/*             <div className="flex items-center max-w-none overflow-hidden  md:-ml-4 lg:-ml-0">
               <iframe
                 className="overflow-hidden rounded-xl shadow-xl ring-1 ring-gray-400/10 md:-ml-4 lg:-ml-0"
                 width="560"
@@ -126,14 +126,15 @@ export default function Home() {
                 referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
               />
-            </div>
-            {/*             <img
+            </div> */}
+            <img
               alt="Product screenshot"
-              src="https://tailwindui.com/img/component-images/dark-project-app-screenshot.png"
+              src="https://s3.tebi.io/website-images/calendar.png"
               width={2432}
               height={1442}
-              className="w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem] md:-ml-4 lg:-ml-0"
-            /> */}
+              className="w-[48rem] max-w-none rounded-xl ring-1 ring-gray-400/10 sm:w-[57rem] md:-ml-4 lg:-ml-0"
+              //className="w-[48rem] max-w-none rounded-xl shadow-xl ring-1 ring-gray-400/10 sm:w-[57rem] md:-ml-4 lg:-ml-0"
+            />
           </div>
         </div>
       </div>
